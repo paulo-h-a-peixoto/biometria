@@ -1,0 +1,58 @@
+.bd-placeholder-img {
+    font-size: 1.125rem;
+    text-anchor: middle;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
+  }
+
+  @media (min-width: 768px) {
+    .bd-placeholder-img-lg {
+      font-size: 3.5rem;
+    }
+  }
+
+  .home_content {
+    width:100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .home_content .logo { 
+  width: 300px;
+  height:300px;
+  border:1px solid #ccc;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  
+  }
+
+  .home_content .logo img {
+  width: 95px;
+  height: 133px;
+  }
+
+  .home_content .logo b{
+    margin:20px 0px;
+    font-size: 19px;
+  }
+
+  .home_content .container { 
+    width: 500px;
+    border:1px solid #ccc;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    margin-top: 50px;
+    padding: 25px;
+    
+  }
+
+  .home_content .container form{
+    margin: 10px;
+  }
