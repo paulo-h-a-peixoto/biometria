@@ -30,5 +30,7 @@ Route::prefix('/relatorio')->group(function(){
     Route::post('/update', [RelController::class, 'updateAction']);
     Route::get('/id/{id}', [RelController::class, 'id']);
     Route::post('/id/{id}', [RelController::class, 'idAction']);
+    Route::post('/justify', [RelController::class, 'justify']);
     Route::get('/fin/{id}', [RelController::class, 'fin']);
+    Route::get('/print/{id}', [RelController::class, 'print']);
 });

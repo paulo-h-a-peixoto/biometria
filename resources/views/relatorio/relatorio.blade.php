@@ -2,6 +2,7 @@
 @section('title', 'Relatório Ponto Eletrônico')
     
 @section('content')
+
 <h2>Relatórios</h2>
 <div class="table-responsive">
   <table class="table table-striped table-sm">

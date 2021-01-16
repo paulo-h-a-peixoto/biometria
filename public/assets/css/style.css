@@ -56,3 +56,45 @@
   .home_content .container form{
     margin: 10px;
   }
+
+  .content-menu{
+    padding: 10px;
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  .campos{
+    padding:10px;
+    border:1px solid #ccc;
+    background-color: #347BF6;
+    color:#fff;
+    margin:5px 0px;
+  }
+
+  .print_content{
+    width: 100%;
+    padding: 10px;
+  }
+
+  table #alter tr td { /* Toda a tabela com fundo creme */
+    background: #ffc;
+    } 
+  table #alter tr.dif td {
+    background: #eee; /* Linhas com fundo cinza */
+    }
+  .hidden{
+    display: none;
+  }
+    @page {
+      margin: 0.5cm;
+      }
+
+      @media print{
+        .teste{
+          background-color: red;        
+        }
+      }
+
+      .teste{
+        background-color: red;        
+      }
