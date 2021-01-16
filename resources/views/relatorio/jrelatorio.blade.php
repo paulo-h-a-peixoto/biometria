@@ -3,7 +3,7 @@
     
 @section('content')
 
-<h2>Relatórios</h2>
+<h2>Justificar relatórios</h2>
 <div class="table-responsive">
   <table class="table table-striped table-sm">
     <thead>
@@ -22,11 +22,7 @@
             <td>{{($item->status == 0) ? 'PENDENTE':'CONCLUIDO'}}</td>
         <td>
             <div class="btn-group" role="group" >
-            <a class="btn btn-primary" style="color:#fff;" href="{{url('/relatorio/id/'.$item->id)}}">Visualizar</a>
-            @if ($item->status == 0)
-            <a class="btn btn-success" style="color:#fff;" href="{{url('/relatorio/fin/'.$item->id)}}">Finalizar</a>
-            @endif
-            
+            <a class="btn btn-primary" style="color:#fff;" href="{{url('/relatorio/jid/'.$item->id)}}">Visualizar</a>         
           </div>
         </td>
         </tr>

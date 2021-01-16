@@ -8,33 +8,76 @@ use App\Models\Funcionarios;
 use App\Models\Entrada_saida;
 use App\Models\Relatorios;
 use App\Models\Justificativa;
+use App\Models\User;
 
 use Illuminate\Support\Facades\DB;
 
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Auth;
 
+use Illuminate\Support\Facades\Gate;
 use PDF;
 class RelController extends Controller
 {
 
+    public function __construct(Request $request){
+        $this->middleware('auth', ['except'=>[
+
+        ]]);
+
+    }
+
     public function home(){
-        return view('relatorio.home');
+        $data = [
+            'admin' => Gate::allows('admin')
+        ];
+        return view('relatorio.home', $data);
     }
     public function index(){
-        $data = array();
-        $data['rel'] = DB::select('SELECT * FROM relatorios ORDER BY id DESC');
+        $data = [
+            'admin' => Gate::allows('admin'),
+            'rel' => DB::select('SELECT * FROM relatorios ORDER BY id DESC')
+        ];
         return view('relatorio.relatorio', $data);
     }
 
-    public function id(Request $request, $id){
-        $data = array();
-        $rel = Relatorios::where('id', $id)->first();
-        $data['result'] = DB::select('SELECT entrada_saida.id, entrada_saida.justify, entrada_saida.documento, entrada_saida.hora_entrada, entrada_saida.hora_saida, entrada_saida.data, funcionarios.nome_funcionario as nome, funcionarios.divisao as divisao FROM entrada_saida LEFT JOIN funcionarios ON entrada_saida.documento = funcionarios.codigo_funcionario WHERE entrada_saida.n_relatorio = :n_relatorio ORDER BY id', [
-            'n_relatorio' => $rel->n_relatorio
-        ]);
+    public function jrelatorio(){
+        $data = [
+            'admin' => Gate::allows('admin'),
+            'rel' => DB::select('SELECT * FROM relatorios WHERE status = 0 ORDER BY id DESC')
+        ];
         
-        $data['id'] = $id;
+        return view('relatorio.jrelatorio', $data);
+    }
+    public function jid(Request $request, $id){
+        $rel = Relatorios::where('id', $id)->first();
+        $user = Auth::user();
+        $data = [
+            'admin' => Gate::allows('admin'),
+            'result' => DB::select('SELECT entrada_saida.id, entrada_saida.justify, entrada_saida.documento, entrada_saida.hora_entrada, entrada_saida.hora_saida, entrada_saida.data, funcionarios.nome_funcionario as nome, funcionarios.divisao as divisao FROM entrada_saida LEFT JOIN funcionarios ON entrada_saida.documento = funcionarios.codigo_funcionario WHERE entrada_saida.n_relatorio = :n_relatorio AND funcionarios.divisao = :divisao ORDER BY id', [
+                'n_relatorio' => $rel->n_relatorio,
+                'divisao' => $user->divisao
+            ]),
+            'id' => $id,
+            'rel' => $rel
+        ];
+        
+        return view('relatorio.jid', $data);
+
+    }
+
+    public function id(Request $request, $id){
+        $rel = Relatorios::where('id', $id)->first();
+        $data = [
+            'admin' => Gate::allows('admin'),
+            'result' => DB::select('SELECT entrada_saida.id, entrada_saida.justify, entrada_saida.documento, entrada_saida.hora_entrada, entrada_saida.hora_saida, entrada_saida.data, funcionarios.nome_funcionario as nome, funcionarios.divisao as divisao FROM entrada_saida LEFT JOIN funcionarios ON entrada_saida.documento = funcionarios.codigo_funcionario WHERE entrada_saida.n_relatorio = :n_relatorio ORDER BY id', [
+                'n_relatorio' => $rel->n_relatorio
+            ]),
+            'id' => $id,
+            'rel' => $rel
+        ];
+        
         return view('relatorio.id', $data);
 
     }
@@ -58,9 +101,13 @@ class RelController extends Controller
     }
 
     public function gerar(){
-        $data = [];
+        $data = [
+            'admin' => Gate::allows('admin')
+        ];
         return view('relatorio.gerar', $data);
     }
+
+    
 
     public function gerarAction(Request $request){
         if($request->hasFile('acesso')){
@@ -278,6 +325,33 @@ class RelController extends Controller
             return redirect('/relatorio/id/'.$request->input('rel'))->with('alert', 'Justificativa adicionada com sucesso!');
         }
     }
+    public function justify2(Request $request){
+        $es = DB::select('SELECT * FROM entrada_saida WHERE id = :id', ['id'=>$request->input('id')]);
+        $newJust = new Justificativa;
+        if($request->input('opcoes') != '5'){
+            $newJust->codigo_funcionario = $es[0]->documento;
+            $newJust->dataInicio = $request->input('dataInicio');
+            $newJust->dataFinal = $request->input('dataFinal');
+            $newJust->tipoDispensa = $request->input('opcoes');
+            $newJust->descricao = $request->input('justificativa');
+            $newJust->save();
+
+            $update = Entrada_saida::where('id', $request->input('id'))->first();
+            $update->justify = $request->input('opcoes');
+            $update->save();
+            return redirect('/relatorio/jid/'.$request->input('rel'))->with('alert', 'Justificativa adicionada com sucesso!');
+        }else{
+            $newJust->codigo_funcionario = $es[0]->documento;
+            $newJust->tipoDispensa = $request->input('opcoes');
+            $newJust->descricao = $request->input('justificativa');
+            $newJust->save();
+
+            $update = Entrada_saida::where('id', $request->input('id'))->first();
+            $update->justify = $request->input('justificativa');
+            $update->save();
+            return redirect('/relatorio/jid/'.$request->input('rel'))->with('alert', 'Justificativa adicionada com sucesso!');
+        }
+    }
     
     public function print(Request $request, $id){
         $data = [];
@@ -321,7 +395,10 @@ class RelController extends Controller
     }
 
     public function update(){
-        return view('relatorio.atualizar');
+        $data = [
+            'admin' => Gate::allows('admin')
+        ];
+        return view('relatorio.atualizar', $data);
     }
 
     public function updateAction(Request $request){
@@ -373,5 +450,14 @@ class RelController extends Controller
         }else{
             return redirect('/relatorio/update')->with('error', 'ERROR - Nenhum arquivo foi localizado');
         }        
+
+    }
+
+    public function usuarios(){
+        $data = [
+            'admin' => Gate::allows('admin'),
+            'usuarios' => User::all()
+        ];
+        return view('relatorio.usuarios', $data);
     }
 }

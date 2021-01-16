@@ -2,6 +2,9 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\RelController;
+
+use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Auth\RegisterController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -20,6 +23,15 @@ Route::get('/', function () {
 // Auth::routes();
 
 // Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::get('/teste', function(){
+    return view('relatorio.teste');
+});
+Route::get('/login', [LoginController::class, 'login'])->name('login');
+Route::post('/login', [LoginController::class, 'authenticate']);
+Route::get('/logout', [LoginController::class, 'logout']);
+
+Route::get('/register', [RegisterController::class, 'index']);
+Route::post('/register', [RegisterController::class, 'register']);
 
 Route::prefix('/relatorio')->group(function(){
     Route::get('/', [RelController::class, 'index']);
@@ -31,6 +43,10 @@ Route::prefix('/relatorio')->group(function(){
     Route::get('/id/{id}', [RelController::class, 'id']);
     Route::post('/id/{id}', [RelController::class, 'idAction']);
     Route::post('/justify', [RelController::class, 'justify']);
+    Route::post('/justify2', [RelController::class, 'justify2']);
     Route::get('/fin/{id}', [RelController::class, 'fin']);
     Route::get('/print/{id}', [RelController::class, 'print']);
+    Route::get('/jrelatorio', [RelController::class, 'jrelatorio']);
+    Route::get('/jid/{id}', [RelController::class, 'jid']);
+    Route::get('/usuarios', [RelController::class, 'usuarios']);
 });

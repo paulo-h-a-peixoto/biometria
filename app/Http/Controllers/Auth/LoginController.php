@@ -5,7 +5,9 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Illuminate\Support\Facades\Auth;
 
+use Illuminate\Http\Request;
 class LoginController extends Controller
 {
     /*
@@ -26,7 +28,7 @@ class LoginController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = RouteServiceProvider::HOME;
+    protected $redirectTo = '/relatorio/home';
 
     /**
      * Create a new controller instance.
@@ -36,5 +38,24 @@ class LoginController extends Controller
     public function __construct()
     {
         $this->middleware('guest')->except('logout');
+    }
+
+    public function login(){
+        return view('login');
+    }
+
+    public function authenticate(Request $request){
+        $creds = $request->only(['usuario', 'password']);
+        if(Auth::attempt($creds)){
+            return redirect('/relatorio/home');
+        }else{
+            echo 'entrou';
+            return redirect('/login')->with('error', 'Usuário e/ou senha inválidos.');
+        }
+    }
+
+    public function logout(Request $request){
+        Auth::logout();
+        return redirect('/login');
     }
 }

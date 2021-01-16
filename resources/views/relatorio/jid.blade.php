@@ -4,7 +4,7 @@
     
 @section('content')
 <div class="content-menu">
-  <a class="btn btn-success btn-small" target="_blank" style="color:#fff;" href="{{url('/relatorio/print/'.$id)}}">Imprimir</a>
+  <a class="btn btn-success btn-small" style="color:#fff;" href="{{url('/relatorio/jrelatorio')}}">Voltar</a>
 </div>
 <h2>Relatório {{$id}}</h2>
 @if (session('alert'))
@@ -27,78 +27,78 @@
       </tr>
     </thead>
     <tbody>
-      @foreach ($result as $item)
-      @if (strtotime($item->hora_entrada) < strtotime($rel->tolerancia) && $item->hora_entrada != '')
-      <tr style="background-color: #01DF3A;">
-          <td>{{$item->documento}}</td>
-          <td>{{$item->nome}}</td>
-          <td>{{$item->divisao}}</td>
-          <td>{{$item->hora_entrada}}</td>
-          <td>{{$item->hora_saida}}</td>
-          <td>{{$item->data}}</td>
-          <td>{{$item->justify}}</td>
-          <td>
-            
-          </td>
-         
-      </tr>       
-      @endif
-      @if (strtotime($item->hora_entrada) > strtotime($rel->tolerancia))
-      <tr style="background-color: #F5DA81;">
-          <td>{{$item->documento}}</td>
-          <td>{{$item->nome}}</td>
-          <td>{{$item->divisao}}</td>
-          <td>{{$item->hora_entrada}}</td>
-          <td>{{$item->hora_saida}}</td>
-          <td>{{$item->data}}</td>
-          <td>{{$item->justify}}</td>
-          <td>
-            <button type="button" class="btn btn-success justificar" data-toggle="modal" value="{{$item->id}}" data-target="#exampleModalCenter" >
-              Justificar
-            </button>
-          </td>
-         
-      </tr>       
-      @endif
-      @if ($item->hora_entrada == '' && $item->justify == '')
-      <tr style="background-color: #FF0040; color:#fff;">
-          <td>{{$item->documento}}</td>
-          <td>{{$item->nome}}</td>
-          <td>{{$item->divisao}}</td>
-          <td>{{$item->hora_entrada}}</td>
-          <td>{{$item->hora_saida}}</td>
-          <td>{{$item->data}}</td>
-          <td>{{$item->justify}}</td>
-          <td>
-            <button type="button" class="btn btn-success justificar" data-toggle="modal" value="{{$item->id}}" data-target="#exampleModalCenter" >
-              Justificar
-            </button>
-          </td>
-         
-      </tr>       
-      @endif
-      @if ($item->hora_entrada == '' && $item->justify != '')
-      <tr style="background-color: #642EFE; color:#fff;">
-          <td>{{$item->documento}}</td>
-          <td>{{$item->nome}}</td>
-          <td>{{$item->divisao}}</td>
-          <td>{{$item->hora_entrada}}</td>
-          <td>{{$item->hora_saida}}</td>
-          <td>{{$item->data}}</td>
-          <td>{{$item->justify}}</td>
-          <td>
-            <button type="button" class="btn btn-success justificar" data-toggle="modal" value="{{$item->id}}" data-target="#exampleModalCenter" >
-              Justificar
-            </button>
-          </td>
-         
-      </tr>       
-      @endif
+        @foreach ($result as $item)
+        @if (strtotime($item->hora_entrada) < strtotime($rel->tolerancia) && $item->hora_entrada != '')
+        <tr style="background-color: #01DF3A;">
+            <td>{{$item->documento}}</td>
+            <td>{{$item->nome}}</td>
+            <td>{{$item->divisao}}</td>
+            <td>{{$item->hora_entrada}}</td>
+            <td>{{$item->hora_saida}}</td>
+            <td>{{$item->data}}</td>
+            <td>{{$item->justify}}</td>
+            <td>
+              
+            </td>
+           
+        </tr>       
+        @endif
+        @if (strtotime($item->hora_entrada) > strtotime($rel->tolerancia))
+        <tr style="background-color: #F5DA81;">
+            <td>{{$item->documento}}</td>
+            <td>{{$item->nome}}</td>
+            <td>{{$item->divisao}}</td>
+            <td>{{$item->hora_entrada}}</td>
+            <td>{{$item->hora_saida}}</td>
+            <td>{{$item->data}}</td>
+            <td>{{$item->justify}}</td>
+            <td>
+              <button type="button" class="btn btn-success justificar" data-toggle="modal" value="{{$item->id}}" data-target="#exampleModalCenter" >
+                Justificar
+              </button>
+            </td>
+           
+        </tr>       
+        @endif
+        @if ($item->hora_entrada == '' && $item->justify == '')
+        <tr style="background-color: #FF0040; color:#fff;">
+            <td>{{$item->documento}}</td>
+            <td>{{$item->nome}}</td>
+            <td>{{$item->divisao}}</td>
+            <td>{{$item->hora_entrada}}</td>
+            <td>{{$item->hora_saida}}</td>
+            <td>{{$item->data}}</td>
+            <td>{{$item->justify}}</td>
+            <td>
+              <button type="button" class="btn btn-success justificar" data-toggle="modal" value="{{$item->id}}" data-target="#exampleModalCenter" >
+                Justificar
+              </button>
+            </td>
+           
+        </tr>       
+        @endif
+        @if ($item->hora_entrada == '' && $item->justify != '')
+        <tr style="background-color: #642EFE; color:#fff;">
+            <td>{{$item->documento}}</td>
+            <td>{{$item->nome}}</td>
+            <td>{{$item->divisao}}</td>
+            <td>{{$item->hora_entrada}}</td>
+            <td>{{$item->hora_saida}}</td>
+            <td>{{$item->data}}</td>
+            <td>{{$item->justify}}</td>
+            <td>
+              <button type="button" class="btn btn-success justificar" data-toggle="modal" value="{{$item->id}}" data-target="#exampleModalCenter" >
+                Justificar
+              </button>
+            </td>
+           
+        </tr>       
+        @endif
+        
+        
+        @endforeach
       
-      
-      @endforeach
-    
-  </tbody>
+    </tbody>
   </table>
 </div>
 <!-- Button trigger modal -->
@@ -114,7 +114,7 @@
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
-      <form method="POST" action="/relatorio/justify">
+      <form method="POST" action="/relatorio/justify2">
       @csrf
       <input type="hidden" name="id" value="" id="id">
       
