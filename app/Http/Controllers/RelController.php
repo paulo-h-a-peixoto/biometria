@@ -9,7 +9,7 @@ use App\Models\Entrada_saida;
 use App\Models\Relatorios;
 use App\Models\Justificativa;
 use App\Models\User;
-
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
 
 use Illuminate\Support\Facades\Validator;
@@ -459,5 +459,36 @@ class RelController extends Controller
             'usuarios' => User::all()
         ];
         return view('relatorio.usuarios', $data);
+    }
+
+    public function usuarioEditar(Request $request, $id){
+        $data = [
+            'admin' => Gate::allows('admin'),
+            'usuario' => User::where('id', $id)->first()
+        ];
+        return view('relatorio.usuarioedit', $data);
+    }
+
+    public function usuarioEditarAction(Request $request, $id){
+        $rules = [
+            'nome' => 'required',
+            'divisao' => 'required'
+        ];
+        $validator = Validator::make($request->all(), $rules);
+        if($validator->fails()){
+            return redirect('/relatorio/usuario/editar/'.$id)->withErrors($validator);
+        }
+        $editUser = User::where('id', $id)->first();
+        $editUser->name = $request->input('nome');
+        $editUser->divisao = $request->input('divisao');
+        if($request->input('password') != ''){$editUser->password =  Hash::make($request->input('password'));}
+        $editUser->admin = ($request->input('admin') == '1')?'1':'0';
+        $editUser->save();
+        return redirect('/relatorio/usuario/editar/'.$id)->with('success', 'Usuario editado com sucesso');
+    }
+
+    public function usuarioDel(Request $request, $id){
+        User::where('id', $id)->first()->delete();
+        return redirect('/relatorio/usuarios')->with('success', 'Usuário deletado com sucesso.');
     }
 }

@@ -57,7 +57,7 @@ class RegisterController extends Controller
             return redirect('/register')->withErrors($validator)->withInput();
         }
         $this->create($data);
-        return redirect('/register')->with('success', 'Usuário cadastrado com sucesso.');
+        return redirect('/relatorio/usuarios')->with('success', 'Usuário cadastrado com sucesso.');
     }   
     /**
      * Get a validator for an incoming registration request.

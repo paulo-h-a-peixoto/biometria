@@ -78,16 +78,11 @@
               
             </h6>
             <ul class="nav flex-column mb-2">
-                <li class="nav-item">
-                    <a class="nav-link" href="{{url('/register')}}">
-                        <span data-feather="file-text"></span>
-                        Cadastrar usuários
-                    </a>
-                </li>
+              
               <li class="nav-item">
                 <a class="nav-link" href="{{url('/relatorio/usuarios')}}">
                   <span data-feather="file-text"></span>
-                  Listar usuários
+                  Usuários
                 </a>
               </li>
               

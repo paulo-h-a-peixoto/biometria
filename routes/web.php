@@ -49,4 +49,7 @@ Route::prefix('/relatorio')->group(function(){
     Route::get('/jrelatorio', [RelController::class, 'jrelatorio']);
     Route::get('/jid/{id}', [RelController::class, 'jid']);
     Route::get('/usuarios', [RelController::class, 'usuarios']);
+    Route::get('/usuario/editar/{id}', [RelController::class, 'usuarioEditar']);
+    Route::post('/usuario/editar/{id}', [RelController::class, 'usuarioEditarAction']);
+    Route::get('/usuario/del/{id}', [RelController::class, 'usuarioDel']);
 });
