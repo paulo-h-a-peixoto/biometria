@@ -23,7 +23,8 @@ class RelController extends Controller
 
     public function __construct(Request $request){
         $this->middleware('auth', ['except'=>[
-
+            'grafica',
+            'print'
         ]]);
 
     }
@@ -35,11 +36,15 @@ class RelController extends Controller
         return view('relatorio.home', $data);
     }
     public function index(){
-        $data = [
-            'admin' => Gate::allows('admin'),
-            'rel' => DB::select('SELECT * FROM relatorios ORDER BY id DESC')
-        ];
-        return view('relatorio.relatorio', $data);
+        if(Gate::allows('admin')){
+            $data = [
+                'admin' => Gate::allows('admin'),
+                'rel' => DB::select('SELECT * FROM relatorios ORDER BY id DESC')
+            ];
+            return view('relatorio.relatorio', $data);
+        }else{
+            return redirect('/relatorio/home');
+        }
     }
 
     public function jrelatorio(){
@@ -49,6 +54,15 @@ class RelController extends Controller
         ];
         
         return view('relatorio.jrelatorio', $data);
+    }
+
+    public function grafica(){
+        $data = [
+            'admin' => Gate::allows('admin'),
+            'rel' => DB::select('SELECT * FROM relatorios WHERE status = 1 ORDER BY id DESC')
+        ];
+        
+        return view('relatorio.grafica', $data);
     }
     public function jid(Request $request, $id){
         $rel = Relatorios::where('id', $id)->first();
@@ -96,6 +110,13 @@ class RelController extends Controller
     public function fin(Request $request, $id){
         $rel = Relatorios::where('id', $id)->first();
         $rel->status = 1;
+        $rel->save();
+        return redirect('/relatorio');
+    }
+
+    public function vol(Request $request, $id){
+        $rel = Relatorios::where('id', $id)->first();
+        $rel->status = 0;
         $rel->save();
         return redirect('/relatorio');
     }
@@ -164,9 +185,11 @@ class RelController extends Controller
                                     $newEntrada->save();
                                 }else{
                                     if($exist[0]->hora_saida == ''){
-                                        $update = Entrada_saida::where('id', $exist[0]->id)->first();
-                                        $update->hora_saida = substr_replace($hora, ':', 2, 0);
-                                        $update->save();
+                                        if($exist[0]->hora_entrada != substr_replace($hora, ':', 2, 0)){// esse if vai previnir a pessoa de bater 2x 
+                                            $update = Entrada_saida::where('id', $exist[0]->id)->first();
+                                            $update->hora_saida = substr_replace($hora, ':', 2, 0);
+                                            $update->save();
+                                        }
                                     }else{
                                         $newEntrada = new Entrada_saida;
                                         $newEntrada->n_relatorio = $n_relatorio;
@@ -209,18 +232,21 @@ class RelController extends Controller
                        
                         foreach($funcArray as $item){
                             
-                            
+                            $data = str_replace("/", "-", $result[0]->data);
                             $jus = DB::select('SELECT * FROM justificativa WHERE codigo_funcionario = :codigo_funcionario AND tipoDispensa != "5" AND :dataRelatorio between dataInicio AND dataFinal ORDER BY id DESC LIMIT 1',[
                                 'codigo_funcionario' => $item['codigo_funcionario'],
-                                'dataRelatorio' => date("Y-d-m", strtotime($result[0]->data))
+                                'dataRelatorio' => date('Y-m-d', strtotime($data))
                             ]);
+                            
+                            
                             if($jus){
                                 $newEntrada = new Entrada_saida;
                                 $newEntrada->n_relatorio = $n_relatorio;
                                 $newEntrada->cod = '';
                                 $newEntrada->documento = $item['codigo_funcionario'];
                                 $newEntrada->hora_entrada = '';
-                                $newEntrada->data = '';
+                                $data = str_replace("-", "/", $data);
+                                $newEntrada->data = $data;
                                 $newEntrada->justify = $jus[0]->tipoDispensa;
                                 $newEntrada->save();
                             }else{
@@ -229,7 +255,8 @@ class RelController extends Controller
                                 $newEntrada->cod = '';
                                 $newEntrada->documento = $item['codigo_funcionario'];
                                 $newEntrada->hora_entrada = '';
-                                $newEntrada->data = '';
+                                $data = str_replace("-", "/", $data);
+                                $newEntrada->data = $data;
                                 $newEntrada->save();
                             }
                             
@@ -273,9 +300,11 @@ class RelController extends Controller
                                         $newEntrada->save();
                                     }else{
                                         if($exist2[0]->hora_saida == ''){
-                                            $update = Entrada_saida::where('id', $exist2[0]->id)->first();
-                                            $update->hora_saida = substr_replace($hora, ':', 2, 0);
-                                            $update->save();
+                                            if($exist2[0]->hora_entrada != substr_replace($hora, ':', 2, 0)){ // esse if vai previnir a pessoa de bater 2x 
+                                                $update = Entrada_saida::where('id', $exist2[0]->id)->first();
+                                                $update->hora_saida = substr_replace($hora, ':', 2, 0);
+                                                $update->save();
+                                            }
                                         }else{
                                             $newEntrada = new Entrada_saida;
                                             $newEntrada->n_relatorio = $n_relatorio;
@@ -368,6 +397,7 @@ class RelController extends Controller
         }
         
         $funcionarios = DB::select('SELECT * FROM funcionarios');
+        $data['total'] = count($funcionarios);
         $funcArray = [];
         foreach($funcionarios as $key => $item){
             $funcArray[] = [
@@ -490,5 +520,30 @@ class RelController extends Controller
     public function usuarioDel(Request $request, $id){
         User::where('id', $id)->first()->delete();
         return redirect('/relatorio/usuarios')->with('success', 'Usuário deletado com sucesso.');
+    }
+
+    public function delRel(Request $request, $id){
+        $rel = Relatorios::where('id', $id)->first();
+        Entrada_saida::where('n_relatorio', $rel->n_relatorio)->delete();
+        Relatorios::where('id', $id)->first()->delete();
+        return redirect('/relatorio')->with('alert', 'Relatório deletado com sucesso.');
+
+
+    }
+
+    public function pessoa(Request $request){
+        $data = [
+            'admin' => Gate::allows('admin')
+        ];
+        return view('relatorio.pessoa', $data);
+    }
+    public function pessoaAction(Request $request){
+        $data = array();
+        $data['result'] = DB::select('SELECT entrada_saida.id, entrada_saida.justify, entrada_saida.documento, entrada_saida.hora_entrada, entrada_saida.hora_saida, entrada_saida.data, funcionarios.nome_funcionario as nome, funcionarios.divisao as divisao FROM entrada_saida LEFT JOIN funcionarios ON entrada_saida.documento = funcionarios.codigo_funcionario WHERE entrada_saida.documento = :documento ORDER BY id', [
+            'documento' => $request->input('documento')
+        ]);
+        $data['dataInicio'] = $request->input('dataInicio');
+        $data['dataFinal'] = $request->input('dataFinal');
+        return view('relatorio.printPessoa', $data);
     }
 }

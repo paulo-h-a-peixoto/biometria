@@ -130,6 +130,7 @@
               <option value="Serviço">Serviço</option>
               <option value="Curso">Curso</option>
               <option value="Disposição">Disposição para outra OM</option>
+              <option value="Tele trabalho">Tele trabalho</option>
               <option value="5">Outros</option>
             </select>
           </div>

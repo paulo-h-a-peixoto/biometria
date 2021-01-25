@@ -86,6 +86,8 @@
             Funcionarios com justificativa = {{$qt['4']}}
             <br>
             Faltou = {{$qt['3']}}
+            <br>
+            Total de mílitares e servidores civil = {{$total}}
           </div>
     </div>
 

@@ -19,7 +19,7 @@
         <tr>
             <td>{{$item->id}}</td>
             <td>{{$item->data}}</td>
-            <td>{{($item->status == 0) ? 'PENDENTE':'CONCLUIDO'}}</td>
+            <td>{{($item->status == 0) ? 'Aguardando justificativas dos Chefes de Div/seção':'Tempo de Justificar Encerrado'}}</td>
         <td>
             <div class="btn-group" role="group" >
             <a class="btn btn-primary" style="color:#fff;" href="{{url('/relatorio/jid/'.$item->id)}}">Visualizar</a>         

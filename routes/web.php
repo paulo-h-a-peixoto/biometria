@@ -42,9 +42,11 @@ Route::prefix('/relatorio')->group(function(){
     Route::post('/update', [RelController::class, 'updateAction']);
     Route::get('/id/{id}', [RelController::class, 'id']);
     Route::post('/id/{id}', [RelController::class, 'idAction']);
+    Route::get('/delRel/{id}', [RelController::class, 'delRel']);
     Route::post('/justify', [RelController::class, 'justify']);
     Route::post('/justify2', [RelController::class, 'justify2']);
     Route::get('/fin/{id}', [RelController::class, 'fin']);
+    Route::get('/vol/{id}', [RelController::class, 'vol']);
     Route::get('/print/{id}', [RelController::class, 'print']);
     Route::get('/jrelatorio', [RelController::class, 'jrelatorio']);
     Route::get('/jid/{id}', [RelController::class, 'jid']);
@@ -52,4 +54,8 @@ Route::prefix('/relatorio')->group(function(){
     Route::get('/usuario/editar/{id}', [RelController::class, 'usuarioEditar']);
     Route::post('/usuario/editar/{id}', [RelController::class, 'usuarioEditarAction']);
     Route::get('/usuario/del/{id}', [RelController::class, 'usuarioDel']);
+    Route::get('/grafica', [RelController::class, 'grafica']);
+    Route::get('/pessoa', [RelController::class, 'pessoa']);
+    Route::post('/pessoa', [RelController::class, 'pessoaAction']);
+    
 });

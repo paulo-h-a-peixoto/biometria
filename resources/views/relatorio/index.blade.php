@@ -61,7 +61,7 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{{url('/relatorio/gerar')}}">
+                    <a class="nav-link" href="{{url('/relatorio/pessoa')}}">
                       <span data-feather="file-text"></span>
                       Gerar relatório da pessoa
                     </a>
